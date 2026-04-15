@@ -150,18 +150,14 @@ DB_NAME=your_database_name
 
 ## 📊 SQL Insights — `sql_queries.sql`
 
-Ten advanced analytical queries were written against the `healthcare_data` table. Each uses complex SQL features including **window functions, CTEs, aggregations, and conditional filtering**.
-
----
-
-### Insight 1 — Billing Anomaly Detection
+### 1 — Billing Anomaly Detection
 Flags patients whose billing amount is **more than 2 standard deviations above the average** for their specific condition and admission type. Uses Z-score calculation to surface potential overbilling or unusually complex cases.
 
 **Key techniques:** `STDDEV()`, Z-score via arithmetic, `NULLIF`, `JOIN` on CTE stats.
 
 ---
 
-### Insight 2 — Patient Risk Segmentation
+### 2 — Patient Risk Segmentation
 Assigns each patient a **composite risk score** across four dimensions:
 - **Age** (elderly patients = higher baseline risk)
 - **Length of stay** (longer LOS = more severe presentation)
@@ -174,56 +170,56 @@ Patients are then labelled: `CRITICAL`, `HIGH RISK`, `MODERATE`, or `LOW RISK`.
 
 ---
 
-### Insight 3 — Doctor Performance Scorecard
+### 3 — Doctor Performance Scorecard
 Ranks all doctors by **patient volume, total revenue generated, average length of stay, and test outcome rates** (normal vs abnormal). Dual `RANK()` windows allow comparison of volume rank versus billing rank.
 
 **Key techniques:** `FILTER`, `RANK() OVER()`, `COUNT()`, grouped aggregations.
 
 ---
 
-### Insight 4 — Insurance Provider Profitability & Coverage Analysis
+### 4 — Insurance Provider Profitability & Coverage Analysis
 Breaks down each insurer's patient population by medical condition — showing **min/max/avg billing**, total billed per condition, and split by admission type (Emergency, Elective, Urgent).
 
 **Key techniques:** Multi-column `GROUP BY`, `FILTER` aggregations, `SUM / AVG / MIN / MAX`.
 
 ---
 
-### Insight 5 — Month-over-Month Admission Trends & Seasonality
+### 5 — Month-over-Month Admission Trends & Seasonality
 Tracks **monthly admission volumes and total billing** across the full date range. Uses `LAG()` to compute month-over-month growth percentages — useful for identifying seasonal demand spikes (e.g. winter respiratory illness peaks).
 
 **Key techniques:** `EXTRACT()`, `TO_CHAR()`, `LAG() OVER()`, MoM % growth formula.
 
 ---
 
-### Insight 6 — Repeat Patient / Comorbidity Proxy
+### 6 — Repeat Patient / Comorbidity Proxy
 Identifies patients who were **admitted more than once**, aggregates all their conditions and medications into a single row using `STRING_AGG`, and calculates lifetime billing vs average billing per visit.
 
 **Key techniques:** `STRING_AGG`, `HAVING COUNT(*) > 1`, date range as patient duration, lifetime billing.
 
 ---
 
-### Insight 7 — Hospital Efficiency Benchmarking
+### 7 — Hospital Efficiency Benchmarking
 Compares every hospital on **average length of stay, billing per day, abnormal outcome rate, and doctor headcount**. Uses `NTILE(4)` to assign each hospital a quartile rank for both LOS efficiency and outcome quality.
 
 **Key techniques:** `NTILE(4) OVER()`, billing-per-day derived metric, `COUNT(DISTINCT)`.
 
 ---
 
-### Insight 8 — Medication Effectiveness Proxy
+### 8 — Medication Effectiveness Proxy
 For every medication × condition combination, calculates the **normal outcome rate (%)**, average billing, and average length of stay — giving a surface-level signal of treatment pattern effectiveness.
 
 **Key techniques:** `FILTER` aggregation, normal rate percentage, grouped by medication + condition.
 
 ---
 
-### Insight 9 — Age-Gender Health Matrix
+### 9 — Age-Gender Health Matrix
 Cross-tabulates **age band × gender × medical condition** to reveal demographic health patterns. Uses a proportional window function to show what share of each demographic's total admissions each condition makes up.
 
 **Key techniques:** Age banding with `CASE WHEN`, `SUM() OVER (PARTITION BY ...)` for within-group proportions.
 
 ---
 
-### Insight 10 — Blood Type & Condition Risk Correlation
+### 10 — Blood Type & Condition Risk Correlation
 Examines whether certain **blood types are disproportionately associated** with specific conditions or worse outcomes. Flags blood type × condition combinations with unusually high concentration ratios.
 
 **Key techniques:** `PARTITION BY "Blood Type"` proportional window, abnormal rate by blood group, concentration flagging.
@@ -232,12 +228,14 @@ Examines whether certain **blood types are disproportionately associated** with 
 
 ## 🔑 Key Trends & Findings
 
-- **Billing outliers** exist within specific condition + admission type combinations, suggesting possible variance in treatment complexity or billing practices worth investigating.
-- **Emergency admissions** consistently drive the highest billing amounts and are correlated with higher abnormal test result rates across almost all conditions.
-- **Repeat patients** (admitted more than once) accumulate significantly higher lifetime billing and tend to present with multiple conditions — highlighting the importance of chronic disease management.
-- **Monthly admission volumes** show identifiable seasonal patterns, with certain months seeing higher emergency admission spikes.
-- **Doctor and hospital performance** varies considerably on the billing-per-day and abnormal-rate metrics, revealing candidates for efficiency review.
-- **Medication effectiveness proxies** show that certain drug–condition pairings are associated with meaningfully higher normal outcome rates, which warrants further clinical investigation.
+- **Patient Demographics (Pediatrics):** Within the 0-17 age band, the top condition for females is Obesity (27.3% of pediatric female cases) which also shows a 26.7% abnormal rate. For males in the same age band, Cancer is the leading diagnosis (21.3%) with a surprisingly lower abnormal outcome rate of 23.1%. Asthma in pediatric females showed the highest alarming abnormal test rate at 60.0%. 4,102 patients (7.5%) are CRITICAL risk, all share the same profile: elderly (75+), emergency admission, abnormal test results, and long stays (26–30 days)
+- **Repeat Patients & Chronicity:** Certain patients (e.g., David Munoz) exhibit significant health chronicity, presenting with 3 distinct admissions for Cancer and Diabetes across 138 days in the system, racking up $84,000 in lifetime billing. Repeat patients consistently skew towards high ongoing medical management. 4,973 patients were readmitted, max 3 times. Most same-condition readmissions, though some show multi-condition patterns (Cancer+Diabetes, Arthritis+Asthma, etc.).
+- **Top Performing Doctors:** Doctor "Michael Smith" leads in volume with 27 patients treated, generating $784,000 in total revenue. However, his abnormal outcome rate is 44.4%. "Matthew Smith", treating slightly fewer patients (17), has a vastly lower abnormal rate of just 17.6%, reflecting potential variations in case complexity or efficiency.
+- **Medication Effectiveness Proxies:** When examining condition-medication pairs, **Ibuprofen for Asthma** yielded the highest proportion of "Normal" test results (35.3%) and averaged roughly a 15.9-day stay. By contrast, Aspirin for Arthritis underperformed, with more frequent occurrences of "Abnormal" outcomes and lower "Normal" yield (31.5%).
+- **Insurance Dominance:** "Aetna" and "Blue Cross" are the leading payers across chronic diseases. Aetna covers 1,862 matching Hypertension cases accounting for $48.1M in total lifetime billing, while Blue Cross leads Obesity interventions spanning 1,872 cases and $48.8M billed.
+- **Seasonality of Admissions:** Late 2019 saw significant volume spikes, peaking in October 2019 with a 7.5% month-over-month growth (993 admissions pulling in $25.7M total billing). Month-over-month trends highlight fluctuating demands with predictable emergency case upticks entering the winter months. Monthly admissions are remarkably stable at around 900–1,000/month across 5 years with no seasonal spikes, no COVID dip. The only anomaly is the partial May 2024 cutoff. Emergency admissions hold steady at around 32–33%/year, with no escalation trend.
+- **Absence of Billing Anomalies:** No individual claims breached the strictly defined "Outlier" threshold (> 2 Standard Deviations above the mean) when controlled for exactly the same Medical Condition and Admission Type, pointing towards remarkably consistent billing frameworks across all hospitals in the dataset. However, around 400 negative billing records exist which could indicate potential credits, adjustments, or data errors that need review.
+- **Hospital Efficiency Variations:** "LLC Smith" tops hospital volume with 44 patients and a 15.5-day average length of stay (billing ~$1503 per day). Conversely, "Johnson Inc" processes patients notably faster (14.5-day LOS) but bills at an accelerated daily rate of ~$1891 per day.
 
 ---
 

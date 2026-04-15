@@ -1,5 +1,5 @@
 -- =============================================================================
--- INSIGHT 1: BILLING ANOMALY DETECTION
+-- 1: BILLING ANOMALY DETECTION
 -- Flags patients whose billing amount is more than 2 standard deviations
 -- above the average for their medical condition and admission type.
 -- Useful for identifying potential overbilling or high-complexity cases.
@@ -36,7 +36,7 @@ ORDER BY z_score DESC;
 
 
 -- =============================================================================
--- INSIGHT 2: PATIENT RISK SEGMENTATION (RFM-STYLE)
+-- 2: PATIENT RISK SEGMENTATION (RFM-STYLE)
 -- Segments patients into risk tiers based on:
 --   - Age band (elder patients = higher risk)
 --   - Length of stay (proxy for condition severity)
@@ -113,7 +113,7 @@ ORDER BY total_risk_score DESC, billing_amount DESC;
 
 
 -- =============================================================================
--- INSIGHT 3: DOCTOR PERFORMANCE SCORECARD
+--  3: DOCTOR PERFORMANCE SCORECARD
 -- Ranks doctors by volume, average billing, patient outcomes (test results),
 -- and average length of stay. Highlights potential efficiency outliers.
 -- =============================================================================
@@ -138,7 +138,7 @@ ORDER BY total_patients DESC;
 
 
 -- =============================================================================
--- INSIGHT 4: INSURANCE PROVIDER PROFITABILITY & COVERAGE ANALYSIS
+--  4: INSURANCE PROVIDER PROFITABILITY & COVERAGE ANALYSIS
 -- Breaks down each insurer's patient mix by condition, admission type,
 -- and avg billing — useful for understanding payer distribution.
 -- =============================================================================
@@ -159,7 +159,7 @@ ORDER BY "Insurance Provider", total_billed DESC;
 
 
 -- =============================================================================
--- INSIGHT 5: MONTH-OVER-MONTH ADMISSION TREND & SEASONAL PATTERNS
+--  5: MONTH-OVER-MONTH ADMISSION TREND & SEASONAL PATTERNS
 -- Tracks monthly admission volume and billing totals across years.
 -- Identifies seasonal spikes (e.g. winter respiratory conditions).
 -- =============================================================================
@@ -197,7 +197,7 @@ ORDER BY admission_year, admission_month;
 
 
 -- =============================================================================
--- INSIGHT 6: MEDICAL CONDITION COMORBIDITY PROXY
+--  6: MEDICAL CONDITION COMORBIDITY PROXY
 -- Identifies patients admitted multiple times and groups by conditions seen,
 -- acting as a proxy for comorbidity patterns across re-admissions.
 -- =============================================================================
@@ -232,7 +232,7 @@ ORDER BY total_admissions DESC, lifetime_billing DESC;
 
 
 -- =============================================================================
--- INSIGHT 7: HOSPITAL EFFICIENCY BENCHMARKING
+--  7: HOSPITAL EFFICIENCY BENCHMARKING
 -- Compares hospitals on length of stay, billing efficiency (billing per day),
 -- and outcome quality (abnormal test rate). Uses NTILE to rank hospitals
 -- into performance quartiles.
@@ -271,7 +271,7 @@ ORDER BY total_patients DESC;
 
 
 -- =============================================================================
--- INSIGHT 8: MEDICATION EFFECTIVENESS PROXY BY TEST OUTCOME
+--  8: MEDICATION EFFECTIVENESS PROXY BY TEST OUTCOME
 -- Examines which medications are associated with better test outcomes
 -- (Normal vs Abnormal) across conditions. Useful for surface-level
 -- treatment pattern analysis.
@@ -295,7 +295,7 @@ ORDER BY "Medical Condition", normal_rate_pct DESC;
 
 
 -- =============================================================================
--- INSIGHT 9: AGE-GENDER HEALTH MATRIX
+--  9: AGE-GENDER HEALTH MATRIX
 -- Cross-tabulates age bands with gender to reveal demographic health patterns:
 -- which conditions are most prevalent, avg billing, and test abnormality rates.
 -- =============================================================================
@@ -344,7 +344,7 @@ ORDER BY age_band, "Gender", patient_count DESC;
 
 
 -- =============================================================================
--- INSIGHT 10: BLOOD TYPE & CONDITION RISK CORRELATION
+--  10: BLOOD TYPE & CONDITION RISK CORRELATION
 -- Explores whether certain blood types are disproportionately associated
 -- with specific conditions or worse test outcomes (educational analysis).
 -- Uses a chi-square-style proportion comparison.
