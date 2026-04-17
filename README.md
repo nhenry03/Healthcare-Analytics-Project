@@ -239,7 +239,22 @@ Examines whether certain **blood types are disproportionately associated** with 
 
 ---
 
+## 📈 Dashboard
+
+The dashboard will visualise:
+- KPIs (Card)
+- Patients by Risk Segment (Donut Chart)
+- MoM Admissions & Revenue (Line and Column Chart)
+- Medication Effectiveness (100% Stacked Bar Chart)
+- Avg Length of Stay, Average Daily Billing and Count of Total Patients by Hospital (Scatter Chart)
+- Total Billing by Insurance Provider (Bar Chart)
+
+<img width="1617" height="910" alt="image" src="https://github.com/user-attachments/assets/12711829-f518-4071-ba3c-bf8f4a6491e2" />
+
+
 ## 🚀 How to Run the Full Pipeline
+
+---
 
 ```bash
 # 1. Set up your virtual environment and install dependencies
